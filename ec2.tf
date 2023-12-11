@@ -35,8 +35,6 @@ resource "aws_security_group" "web-sg" {
   }
 }
 
-variable "key_name" {}
-
 resource "tls_private_key" "key_gen" {
   algorithm = "RSA"
   rsa_bits  = 4096
