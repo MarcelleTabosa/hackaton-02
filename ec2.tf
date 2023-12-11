@@ -1,7 +1,7 @@
 resource "aws_instance" "hack02-itt" {
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
-  key_name               = tls_private_key.generated_key.private_key_openssh
+  key_name               = tls_private_key.generated_key.private_key_pem
   vpc_security_group_ids = [aws_security_group.web-sg.id]
   tags = {
     Name = "hack02-itt"
@@ -43,7 +43,7 @@ module "key_pair" {
   source = "terraform-aws-modules/key-pair/aws"
 
   key_name   = "deployer-two"
-  public_key = trimspace(tls_private_key.generated_key.public_key_openssh)
+  public_key = trimspace(tls_private_key.generated_key.public_key_pem)
 }
 
 # resource "tls_private_key" "key_gen" {
