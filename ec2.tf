@@ -1,15 +1,12 @@
 resource "aws_instance" "hack02-itt" {
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
-  key_name               = "itt-keys"
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.web-sg.id]
   tags = {
-    Name = "hack02-itt-2"
+    Name = "hack02-itt"
   }
   user_data = file("${path.module}/configs.sh")
-}
-output "hack02-itt" {
-  value = aws_instance.hack02-itt.public_dns
 }
 
 resource "random_pet" "sg" {}
@@ -36,4 +33,25 @@ resource "aws_security_group" "web-sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+variable "key_name" {}
+
+resource "tls_private_key" "key_gen" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = var.key_name
+  public_key = tls_private_key.key_gen.public_key_openssh
+}
+
+output "private_key" {
+  value     = tls_private_key.key_gen.private_key_pem
+  sensitive = true
+}
+
+output "hack02-itt" {
+  value = aws_instance.hack02-itt.public_dns
 }
