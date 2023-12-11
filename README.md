@@ -1,2 +1,2 @@
-# hackaton-02
+# Hackaton
 Repositorio para armazenar o projeto do hackaton
