@@ -1,7 +1,7 @@
 resource "aws_instance" "hack02-itt" {
   ami                    = "ami-0fc5d935ebf8bc3bc"
   instance_type          = "t2.micro"
-  key_name               = aws_key_pair.generated_key.key_name
+  key_name               = tls_private_key.generated_key.private_key_openssh
   vpc_security_group_ids = [aws_security_group.web-sg.id]
   tags = {
     Name = "hack02-itt"
@@ -35,20 +35,31 @@ resource "aws_security_group" "web-sg" {
   }
 }
 
-resource "tls_private_key" "key_gen" {
+resource "tls_private_key" "generated_key" {
   algorithm = "RSA"
-  rsa_bits  = 4096
 }
 
-resource "aws_key_pair" "generated_key" {
-  key_name   = var.key_name
-  public_key = tls_private_key.key_gen.public_key_openssh
+module "key_pair" {
+  source = "terraform-aws-modules/key-pair/aws"
+
+  key_name   = "deployer-two"
+  public_key = trimspace(tls_private_key.generated_key.public_key_openssh)
 }
 
-output "private_key" {
-  value     = tls_private_key.key_gen.private_key_pem
-  sensitive = true
-}
+# resource "tls_private_key" "key_gen" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+
+# resource "aws_key_pair" "generated_key" {
+#   key_name   = var.key_name
+#   public_key = tls_private_key.key_gen.public_key_openssh
+# }
+
+# output "private_key" {
+#   value     = tls_private_key.key_gen.private_key_pem
+#   sensitive = true
+# }
 
 output "hack02-itt" {
   value = aws_instance.hack02-itt.public_dns
