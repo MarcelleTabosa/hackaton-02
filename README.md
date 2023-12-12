@@ -1,6 +1,8 @@
 # Hackaton
 Repositorio para armazenar o projeto do hackaton
 
+Dupla: João Anderson e Marcelle Tabosa
+
 ## Página Web do nginx
 
 ![image](https://github.com/MarcelleTabosa/hackaton-02/assets/99770580/0a4caa2c-9f73-46ea-afed-3535b1c0bfbc)
